@@ -21,7 +21,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jSeparator1" alignment="0" pref="491" max="32767" attributes="0"/>
                           <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
@@ -162,6 +162,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="usernameTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="amraskar543"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="passwordField">
     </Component>
@@ -201,6 +204,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Register"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="registerButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
@@ -208,6 +214,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="nameTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Amro Emad Askar"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
@@ -215,6 +224,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="idTextField3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="29901011302568"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -222,6 +234,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="addressTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="minya alqamh / sharkia"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
@@ -229,8 +244,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="birthDayTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="1999-01-01"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="emailTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="amraskar543@gmail.com"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
       <Properties>
@@ -238,6 +259,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="mobileTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="01069163037"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>

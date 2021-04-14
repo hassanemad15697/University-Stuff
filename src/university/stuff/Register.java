@@ -5,9 +5,12 @@
  */
 package university.stuff;
 
-import java.awt.Color;
+import DataBaseAPI.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,7 +21,8 @@ public class Register extends javax.swing.JPanel {
     /**
      * Creates new form Register
      */
-    private final String[] stuff = {"Choose...","Management", "Academic", "Security"};
+    DataBase myDB = new DataBase();
+    private final String[] stuff = {"", "Management", "Academic", "Security"};
     private final String[] managementJobs = {"Student Affairs", "Graduate Affairs", "Administrative Affairs", "Legal Affairs", "financial affairs"};
     private final String[] academicJobs = {"Profrssor", "Assestant"};
     private final String[] securityJobs = {"Security Manager", "security guard"};
@@ -84,6 +88,8 @@ public class Register extends javax.swing.JPanel {
 
         jLabel3.setText("Department");
 
+        usernameTextField.setText("amraskar543");
+
         departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Management", "Academic", "Security" }));
         departmentComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,16 +100,33 @@ public class Register extends javax.swing.JPanel {
         jLabel4.setText("Job");
 
         registerButton.setText("Register");
+        registerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerButtonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Full Name");
 
+        nameTextField.setText("Amro Emad Askar");
+
         jLabel6.setText("National ID");
+
+        idTextField3.setText("29901011302568");
 
         jLabel7.setText("Address");
 
+        addressTextField.setText("minya alqamh / sharkia");
+
         jLabel8.setText("Birth Day");
 
+        birthDayTextField.setText("1999-01-01");
+
+        emailTextField.setText("amraskar543@gmail.com");
+
         jLabel9.setText("Email");
+
+        mobileTextField.setText("01069163037");
 
         jLabel10.setText("Mobile");
 
@@ -120,7 +143,7 @@ public class Register extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
                             .addComponent(jSeparator2)
                             .addComponent(jLabel12)
                             .addGroup(layout.createSequentialGroup()
@@ -222,15 +245,131 @@ public class Register extends javax.swing.JPanel {
         if (departmentComboBox.getSelectedItem().equals("Management")) {
             jobComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(managementJobs));
 
-        }else if (departmentComboBox.getSelectedItem().equals("Academic")) {
+        } else if (departmentComboBox.getSelectedItem().equals("Academic")) {
             jobComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(academicJobs));
 
-        }else if (departmentComboBox.getSelectedItem().equals("Security")) {
+        } else if (departmentComboBox.getSelectedItem().equals("Security")) {
             jobComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(securityJobs));
 
         }
     }//GEN-LAST:event_departmentComboBoxActionPerformed
 
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        if (isAnyFieldEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please Fill all fields");
+        } else if (isUserExist()) {
+            JOptionPane.showMessageDialog(this, "Username already exists");
+        } else if (isnationalIDExist()) {
+            JOptionPane.showMessageDialog(this, "National ID already exists");
+        } else if (isEmailExist()) {
+            JOptionPane.showMessageDialog(this, "Email already exists");
+        } else if (isMobileExist()) {
+            JOptionPane.showMessageDialog(this, "Mobile already exists");
+        } else if (isJobNotSelected()) {
+            JOptionPane.showMessageDialog(this, "Please Select Department");
+        } else if (!birthDayTextField.getText().matches("^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")) {
+            JOptionPane.showMessageDialog(this, "Enter Birth Day like yyyy-mm-dd like 1997-06-15 ");
+        } else {
+            try {
+                myDB.connectToDataBase();
+
+                myDB.insertDataIntoAllColumns("user", "'" + usernameTextField.getText() + "' "
+                        + ", '" + passwordField.getText() + "' " + ", '" + departmentComboBox.getSelectedItem() + "' "
+                        + ", '" + jobComboBox.getSelectedItem() + "' ");
+
+                myDB.insertDataIntoAllColumns("personal_info", "'" + usernameTextField.getText() + "' "
+                        + ", '" + nameTextField.getText() + "' " + ", '" + idTextField3.getText() + "' "
+                        + ", '" + birthDayTextField.getText() + "' " + ", '" + addressTextField.getText() + "' "
+                        + ", '" + emailTextField.getText() + "' " + ", '" + mobileTextField.getText() + "' ");
+
+                JOptionPane.showMessageDialog(this, "Empolyee added Succesfully");
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_registerButtonActionPerformed
+    private boolean isAnyFieldEmpty() {
+        if (nameTextField.getText().isEmpty() || idTextField3.getText().isEmpty() || addressTextField.getText().isEmpty()
+                || birthDayTextField.getText().isEmpty() || emailTextField.getText().isEmpty() || mobileTextField.getText().isEmpty()
+                || usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private ArrayList< String> data = new ArrayList<>();
+
+    private boolean isUserExist() {
+        try {
+            myDB.connectToDataBase();
+            data = myDB.getSpecificTableData("personal_info", "username");
+            for (String user : data) {
+                if (user.equals(usernameTextField.getText())) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    private boolean isnationalIDExist() {
+        try {
+            myDB.connectToDataBase();
+            data = myDB.getSpecificTableData("personal_info", "national_id");
+            for (String user : data) {
+                if (user.equals(idTextField3.getText())) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    private boolean isEmailExist() {
+        try {
+            myDB.connectToDataBase();
+            data = myDB.getSpecificTableData("personal_info", "email");
+            for (String user : data) {
+                if (user.equals(emailTextField.getText())) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    private boolean isMobileExist() {
+        try {
+            myDB.connectToDataBase();
+            data = myDB.getSpecificTableData("personal_info", "mobile");
+            for (String user : data) {
+                if (user.equals(mobileTextField.getText())) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    private boolean isJobNotSelected() {
+        if (departmentComboBox.getSelectedItem().equals("")) {
+            return true;
+        }
+        return false;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField addressTextField;

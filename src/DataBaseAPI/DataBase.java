@@ -21,7 +21,7 @@ import javax.swing.tree.TreeNode;
  */
 public class DataBase {
 
-    private final String dataBaseName = "dbschool";
+    private final String dataBaseName = "university_stuff";
     private final String username = "DBHassan",
             password = "ELKBEER36647126358#",
             host = "jdbc:mysql://localhost/" + dataBaseName;

@@ -26,21 +26,27 @@ public class Register extends javax.swing.JPanel {
     private final String[] managementJobs = {"Student Affairs", "Graduate Affairs", "Administrative Affairs", "Legal Affairs", "financial affairs"};
     private final String[] academicJobs = {"Profrssor", "Assestant"};
     private final String[] securityJobs = {"Security Manager", "security guard"};
-    private final String[] student = {"bachros", "magsteer", "doctorah"};
+    private final String[] student = {"", "Bachelor", "master", "doctorah"};
+    private final String[] bachelorStudent = {"Preparatory", "Civil Engineering", "Communication Engineering", "Mechatronics Engineering", "Architecture Engineering", "Power Engineering"};
+    private final String[] levelPreparatoryStudent = {"1"};
+    private final String[] levelSpecializedStudent = {"2", "3", "4", "5"};
 
     static int createsNum = 1;
+    private String whoRegister;
 
     public Register(String whoRegister) {
+        this.whoRegister = whoRegister;
         initComponents();
         if (whoRegister.equals("empolyee")) {
             jLabel3.setText("Department");
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(stuff));
             jLabel4.setText("Job");
+            jLabel13.setVisible(false);
+            levelComboBox.setVisible(false);
         } else if (whoRegister.equals("student")) {
-            jLabel3.setText("Specialization");
+            jLabel3.setText("Qualification");
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(student));
-            jLabel4.hide();
-            jobComboBox.hide();
+            jLabel4.setText("Specialization");
         }
         createsNum++;
     }
@@ -81,6 +87,8 @@ public class Register extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel12 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
+        levelComboBox = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
 
         jLabel1.setText("Login Code");
 
@@ -94,6 +102,12 @@ public class Register extends javax.swing.JPanel {
         departmentComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 departmentComboBoxActionPerformed(evt);
+            }
+        });
+
+        jobComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jobComboBoxActionPerformed(evt);
             }
         });
 
@@ -134,6 +148,8 @@ public class Register extends javax.swing.JPanel {
 
         jLabel12.setText("Stuff Inforamations");
 
+        jLabel13.setText("Level");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -146,39 +162,40 @@ public class Register extends javax.swing.JPanel {
                             .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
                             .addComponent(jSeparator2)
                             .addComponent(jLabel12)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(18, 18, 18)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(idTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(addressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(birthDayTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(mobileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addComponent(registerButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(registerButton, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(departmentComboBox, 0, 265, Short.MAX_VALUE)
-                                            .addComponent(passwordField)
-                                            .addComponent(usernameTextField)
-                                            .addComponent(jobComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(idTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(addressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(birthDayTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(mobileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(departmentComboBox, 0, 265, Short.MAX_VALUE)
+                                        .addComponent(passwordField)
+                                        .addComponent(usernameTextField)
+                                        .addComponent(jobComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(levelComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel11)
@@ -236,8 +253,12 @@ public class Register extends javax.swing.JPanel {
                     .addComponent(jobComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(levelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(18, 18, 18)
                 .addComponent(registerButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -251,6 +272,8 @@ public class Register extends javax.swing.JPanel {
         } else if (departmentComboBox.getSelectedItem().equals("Security")) {
             jobComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(securityJobs));
 
+        } else if (departmentComboBox.getSelectedItem().equals("Bachelor")) {
+            jobComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(bachelorStudent));
         }
     }//GEN-LAST:event_departmentComboBoxActionPerformed
 
@@ -273,9 +296,19 @@ public class Register extends javax.swing.JPanel {
             try {
                 myDB.connectToDataBase();
 
-                myDB.insertDataIntoAllColumns("user", "'" + usernameTextField.getText() + "' "
-                        + ", '" + passwordField.getText() + "' " + ", '" + departmentComboBox.getSelectedItem() + "' "
-                        + ", '" + jobComboBox.getSelectedItem() + "' ");
+                myDB.insertDataIntoAllColumns("user", "" + usernameTextField.getText() + " "
+                        + ", '" + passwordField.getText() + "' , '" + whoRegister + "'");
+                if (whoRegister.equals("empolyee")) {
+                    myDB.insertDataIntoAllColumns("staff", "" + usernameTextField.getText() + " "
+                            + ", '" + departmentComboBox.getSelectedItem() + "' "
+                            + ", '" + jobComboBox.getSelectedItem() + "' ");
+
+                } else if (whoRegister.equals("student")) {
+                    myDB.insertDataIntoAllColumns("student", "'" + usernameTextField.getText() + "' "
+                            + ", '" + departmentComboBox.getSelectedItem() + "' "
+                            + ", '" + jobComboBox.getSelectedItem() + "' "
+                            + ", " + levelComboBox.getSelectedItem() + " ");
+                }
 
                 myDB.insertDataIntoAllColumns("personal_info", "'" + usernameTextField.getText() + "' "
                         + ", '" + nameTextField.getText() + "' " + ", '" + idTextField3.getText() + "' "
@@ -289,6 +322,14 @@ public class Register extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_registerButtonActionPerformed
+
+    private void jobComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jobComboBoxActionPerformed
+        if (jobComboBox.getSelectedItem().equals("Preparatory")) {
+            levelComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(levelPreparatoryStudent));
+        } else if (!jobComboBox.getSelectedItem().equals("Preparatory")) {
+            levelComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(levelSpecializedStudent));
+        }
+    }//GEN-LAST:event_jobComboBoxActionPerformed
     private boolean isAnyFieldEmpty() {
         if (nameTextField.getText().isEmpty() || idTextField3.getText().isEmpty() || addressTextField.getText().isEmpty()
                 || birthDayTextField.getText().isEmpty() || emailTextField.getText().isEmpty() || mobileTextField.getText().isEmpty()
@@ -381,6 +422,7 @@ public class Register extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -392,6 +434,7 @@ public class Register extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JComboBox<String> jobComboBox;
+    private javax.swing.JComboBox<String> levelComboBox;
     private javax.swing.JTextField mobileTextField;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JPasswordField passwordField;

@@ -82,7 +82,7 @@ public class Register extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
 
-        jLabel1.setText("Username    ");
+        jLabel1.setText("Login Code");
 
         jLabel2.setText("Password");
 
@@ -282,7 +282,7 @@ public class Register extends javax.swing.JPanel {
                         + ", '" + birthDayTextField.getText() + "' " + ", '" + addressTextField.getText() + "' "
                         + ", '" + emailTextField.getText() + "' " + ", '" + mobileTextField.getText() + "' ");
 
-                JOptionPane.showMessageDialog(this, "Empolyee added Succesfully");
+                JOptionPane.showMessageDialog(this, "Succesfully Added");
 
             } catch (SQLException ex) {
                 Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,7 +303,7 @@ public class Register extends javax.swing.JPanel {
     private boolean isUserExist() {
         try {
             myDB.connectToDataBase();
-            data = myDB.getSpecificTableData("personal_info", "username");
+            data = myDB.getSpecificTableData("personal_info", "id");
             for (String user : data) {
                 if (user.equals(usernameTextField.getText())) {
                     return true;

@@ -31,12 +31,15 @@ public class Register extends javax.swing.JPanel {
     private final String[] levelPreparatoryStudent = {"1"};
     private final String[] levelSpecializedStudent = {"2", "3", "4", "5"};
 
-    static int createsNum = 1;
+    public static int createdStudentNum = 0;
+    public static int createdStuffNum = 0;
     private String whoRegister;
 
     public Register(String whoRegister) {
+
         this.whoRegister = whoRegister;
         initComponents();
+
         if (whoRegister.equals("empolyee")) {
             jLabel3.setText("Department");
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(stuff));
@@ -48,7 +51,13 @@ public class Register extends javax.swing.JPanel {
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(student));
             jLabel4.setText("Specialization");
         }
-        createsNum++;
+        if (whoRegister.equals("empolyee")) {
+            createdStuffNum++;
+            System.out.println("createdStuffNum  " + createdStuffNum);
+        } else {
+            createdStudentNum++;
+            System.out.println("createdStudentNum  " + createdStudentNum);
+        }
     }
 
     /**

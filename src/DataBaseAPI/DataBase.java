@@ -7,13 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 
 /**
  *
@@ -78,7 +76,7 @@ public class DataBase {
         conn = DriverManager.getConnection(host, username, password);
         //execute("");
         dataBaseStructure();
-        System.out.println("colsed!");
+        System.out.println("Connected!");
         return conn;
     }
 
@@ -86,7 +84,7 @@ public class DataBase {
         dataBaseStructure();
         conn.close();
         stmnt.close();
-        System.out.println("Connected!");
+        System.out.println("colsed!");
     }
 
     public void createTable(String tableName, String columnsValues) throws SQLException {

@@ -62,9 +62,9 @@ public class SignIn extends javax.swing.JFrame {
 
         passwordField.setText("admin");
 
-        userTextField.setText("hassanaskar5");
+        userTextField.setText("1");
 
-        jLabel1.setText("Username     ");
+        jLabel1.setText("User Code    ");
 
         jLabel2.setText("Password");
 
@@ -133,10 +133,10 @@ public class SignIn extends javax.swing.JFrame {
         try {
 
             myDB.connectToDataBase();
-            data = myDB.getSpecificTableDataWithCondition("user", "password", "username = '" + userTextField.getText() + "'");
+            data = myDB.getSpecificTableDataWithCondition("user", "password", "id = '" + userTextField.getText() + "'");
             if (data != null) {
-                if ("admin".equals(new String(passwordField.getPassword()))) {
-                    new Home( userTextField.getText());
+                if (data.get(0).equals(new String(passwordField.getPassword()))) {
+                    new Home(userTextField.getText());
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Wronge Password ");

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
@@ -214,48 +215,66 @@ public class DataBase {
 
     }
 
-    public ArrayList<String> getSpecificTableData(String tableName, String columns) throws SQLException {
+    private ArrayList<String> getColumnsNames(String columnsName) {
+        ArrayList<String> columnsNames = new ArrayList<>();
+        for (String string : new ArrayList<>(Arrays.asList(columnsName.split(",")))) {
+            columnsNames.add(string.trim());
+        }
+        return columnsNames;
+    }
+
+    public ArrayList<Table.Column> getColumnsData(String tableName, String columnsName) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName)) {
-                for (Table.Column column : table.getColumnsNames()) {
-                    if (column.getColumnName().equals(columns)) {
-                        rslt = executeQuery("SELECT " + columns + " FROM " + tableName);
-                        if (rslt.next() == false) {
-                            return null;
-                        } else {
-                            //delete old data
+                rslt = executeQuery("SELECT " + columnsName + " FROM " + tableName);
+                if (rslt.next() == false) {
+                    return null;
+                } else {
+                    //clear old data
+                    for (Table.Column column : table.getColumnsNames()) {
+                        if (getColumnsNames(columnsName).contains(column.getColumnName())) {
                             column.getColumnsDatas().clear();
-                            //add new data
-                            do {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            } while (rslt.next());
-                            return column.getColumnsDatas();
                         }
                     }
+                    
+                    do {
+                        for (Table.Column column : table.getColumnsNames()) {
+                            if (getColumnsNames(columnsName).contains(column.getColumnName())) {
+                                column.addData(rslt.getString(column.getColumnName()));
+                            }
+                        }
+                    } while (rslt.next());
+                    return table.getColumnsNames();
+
                 }
+               
             }
         }
         return null;
     }
 
-    public void showSpecificTableData(String tableName, String columns) throws SQLException {
-        data = getSpecificTableData(tableName, columns);
-        if (data == null) {
+    public void showColumnsData(String tableName, String columnsName) throws SQLException {
+        column = getColumnsData(tableName,columnsName);
+        if (column == null) {
             System.err.println("null");
         } else {
-            for (String d : data) {
-                System.out.println(d);
+            for (Table.Column col : column) {
+                System.out.print(col.getColumnName() + "\t\t");
+                for (String columnsData : col.getColumnsDatas()) {
+                    System.out.print(columnsData + "\t");
+                }
+                System.out.println("");
             }
         }
 
     }
 
-    public ArrayList<String> getSpecificTableDataWithCondition(String tableName, String columns, String condition) throws SQLException {
+    public ArrayList<String> getSpecificTableDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName)) {
                 for (Table.Column column : table.getColumnsNames()) {
-                    if (column.getColumnName().equals(columns)) {
-                        rslt = executeQuery("SELECT " + columns + " FROM " + tableName + " WHERE " + condition);
+                    if (column.getColumnName().equals(columnName)) {
+                        rslt = executeQuery("SELECT " + columnName + " FROM " + tableName + " WHERE " + condition);
                         if (rslt.next() == false) {
                             return null;
                         } else {
@@ -274,8 +293,8 @@ public class DataBase {
         return null;
     }
 
-    public void showSpecificTableDataWithCondition(String tableName, String columns, String condition) throws SQLException {
-        data = getSpecificTableDataWithCondition(tableName, columns, condition);
+    public void showSpecificTableDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
+        data = getSpecificTableDataWithCondition(tableName, columnName, condition);
         if (data == null) {
             System.err.println("null");
         } else {
@@ -337,7 +356,7 @@ public class DataBase {
                 }
             }
         }
-        
+
         ////delete old columns data
         m.setRowCount(0);
 
@@ -355,6 +374,7 @@ public class DataBase {
         }
 
     }
+
     public String makeJTree(JTree tree) throws SQLException {
         DataBase = dataBaseStructure();
         String firstTable = DataBase.get(0).getTableName();

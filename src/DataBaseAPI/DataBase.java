@@ -33,6 +33,46 @@ public class DataBase {
     private ArrayList< Table.Column> columnsHolder = new ArrayList<>();
     private ArrayList< String> dataHolder = new ArrayList<>();
 
+    public Connection connectToDataBase() throws SQLException {
+        conn = DriverManager.getConnection(host, username, password);
+        //execute("");
+        dataBaseStructure();
+        System.out.println("Connected!");
+        return conn;
+    }
+
+    public void closeDataBaseConnection() throws SQLException {
+
+            if (stmnt != null) {
+                stmnt.close();
+                System.out.println("Prepared Statement colsed!");
+            }
+            if (conn != null) {
+                conn.close();
+                System.out.println("Connection colsed!");
+            }
+
+    }
+
+
+    private ResultSet executeQuery(String query) throws SQLException {
+        stmnt = conn.prepareStatement(query);
+        return stmnt.executeQuery();
+    }
+
+    private void execute(String query) throws SQLException {
+        stmnt = conn.prepareStatement(query);
+        stmnt.execute();
+    }
+
+    private ArrayList<String> getColumnsNames(String columnsName) {
+        ArrayList<String> columnsNames = new ArrayList<>();
+        for (String string : new ArrayList<>(Arrays.asList(columnsName.split(",")))) {
+            columnsNames.add(string.trim());
+        }
+        return columnsNames;
+    }
+
     public ArrayList<Table> dataBaseStructure() throws SQLException {
         DataBase.clear();
         md = conn.getMetaData();
@@ -61,31 +101,6 @@ public class DataBase {
             }
             System.out.println();
         }
-    }
-
-    private ResultSet executeQuery(String query) throws SQLException {
-        stmnt = conn.prepareStatement(query);
-        return stmnt.executeQuery();
-    }
-
-    private void execute(String query) throws SQLException {
-        stmnt = conn.prepareStatement(query);
-        stmnt.execute();
-    }
-
-    public Connection connectToDataBase() throws SQLException {
-        conn = DriverManager.getConnection(host, username, password);
-        //execute("");
-        dataBaseStructure();
-        System.out.println("Connected!");
-        return conn;
-    }
-
-    public void closeDataBaseConnection() throws SQLException {
-        dataBaseStructure();
-        conn.close();
-        stmnt.close();
-        System.out.println("colsed!");
     }
 
     public void createTable(String tableName, String columnsValues) throws SQLException {
@@ -215,7 +230,7 @@ public class DataBase {
 
     }
 
-    public Table.Column getOneColumnData(String tableName, String columnName) throws SQLException {
+    public ArrayList<String> getOneColumnData(String tableName, String columnName) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
                 for (Table.Column column : table.getColumnsNames()) {
@@ -230,7 +245,7 @@ public class DataBase {
                             do {
                                 column.addData(rslt.getString(column.getColumnName()));
                             } while (rslt.next());
-                            return column;
+                            return column.getColumnsDatas();
                         }
                     }
                 }
@@ -240,7 +255,7 @@ public class DataBase {
     }
 
     public void showOneColumnData(String tableName, String columnName) throws SQLException {
-        dataHolder = getOneColumnData(tableName.trim(), columnName.trim()).getColumnsDatas();
+        dataHolder = getOneColumnData(tableName.trim(), columnName.trim());
         if (dataHolder == null) {
             System.err.println("null");
         } else {
@@ -251,7 +266,7 @@ public class DataBase {
 
     }
 
-    public Table.Column getOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
+    public ArrayList<String> getOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
                 for (Table.Column column : table.getColumnsNames()) {
@@ -266,7 +281,7 @@ public class DataBase {
                             do {
                                 column.addData(rslt.getString(column.getColumnName()));
                             } while (rslt.next());
-                            return column;
+                            return column.getColumnsDatas();
                         }
                     }
                 }
@@ -276,7 +291,7 @@ public class DataBase {
     }
 
     public void showOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
-        dataHolder = getOneColumnDataWithCondition(tableName.trim(), columnName.trim(), condition.trim()).getColumnsDatas();
+        dataHolder = getOneColumnDataWithCondition(tableName.trim(), columnName.trim(), condition.trim());
         if (dataHolder == null) {
             System.err.println("null");
         } else {
@@ -287,7 +302,7 @@ public class DataBase {
 
     }
 
-    public Table.Column getOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
+    public ArrayList<String> getOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
                 for (Table.Column column : table.getColumnsNames()) {
@@ -302,7 +317,7 @@ public class DataBase {
                             do {
                                 column.addData(rslt.getString(column.getColumnName()));
                             } while (rslt.next());
-                            return column;
+                            return column.getColumnsDatas();
                         }
                     }
                 }
@@ -312,7 +327,7 @@ public class DataBase {
     }
 
     public void showOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
-        dataHolder = getOneColumnDataWithConditionByOrder(tableName.trim(), columnName.trim(), condition.trim(), Order.trim()).getColumnsDatas();
+        dataHolder = getOneColumnDataWithConditionByOrder(tableName.trim(), columnName.trim(), condition.trim(), Order.trim());
         if (dataHolder == null) {
             System.err.println("null");
         } else {
@@ -321,14 +336,6 @@ public class DataBase {
             }
         }
 
-    }
-
-    private ArrayList<String> getColumnsNames(String columnsName) {
-        ArrayList<String> columnsNames = new ArrayList<>();
-        for (String string : new ArrayList<>(Arrays.asList(columnsName.split(",")))) {
-            columnsNames.add(string.trim());
-        }
-        return columnsNames;
     }
 
     public ArrayList<Table.Column> getColumnsData(String tableName, String columnsName) throws SQLException {

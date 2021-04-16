@@ -7,9 +7,6 @@ package university.stuff;
 
 import DataBaseAPI.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -105,7 +102,9 @@ public class Register extends javax.swing.JPanel {
 
         jLabel3.setText("Department");
 
-        usernameTextField.setText("amraskar543");
+        usernameTextField.setText("1");
+
+        passwordField.setText("password");
 
         departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Management", "Academic", "Security" }));
         departmentComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -289,14 +288,22 @@ public class Register extends javax.swing.JPanel {
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
         if (isAnyFieldEmpty()) {
             JOptionPane.showMessageDialog(this, "Please Fill all fields");
-        } else if (isUserExist()) {
+        } else if (isUserExist() == 1) {
             JOptionPane.showMessageDialog(this, "Username already exists");
-        } else if (isnationalIDExist()) {
+        } else if (isUserExist() == 2) {
+            JOptionPane.showMessageDialog(this, "User Code is numbers only");
+        } else if (isnationalIDExist() == 1) {
             JOptionPane.showMessageDialog(this, "National ID already exists");
-        } else if (isEmailExist()) {
+        } else if (isnationalIDExist() == 2) {
+            JOptionPane.showMessageDialog(this, "National Id is numbers only");
+        } else if (isEmailExist() == 1) {
             JOptionPane.showMessageDialog(this, "Email already exists");
-        } else if (isMobileExist()) {
+        } else if (isEmailExist() == 2) {
+            JOptionPane.showMessageDialog(this, "That's not email");
+        } else if (isMobileExist() == 1) {
             JOptionPane.showMessageDialog(this, "Mobile already exists");
+        } else if (isMobileExist() == 2) {
+            JOptionPane.showMessageDialog(this, "Mobile is numbers only");
         } else if (isJobNotSelected()) {
             JOptionPane.showMessageDialog(this, "Please Select Department");
         } else if (!birthDayTextField.getText().matches("^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")) {
@@ -307,18 +314,22 @@ public class Register extends javax.swing.JPanel {
 
                 myDB.insertDataIntoAllColumns("user", "" + usernameTextField.getText() + " "
                         + ", '" + passwordField.getText() + "' , '" + whoRegister + "'");
+
                 if (whoRegister.equals("empolyee")) {
+                    myDB.connectToDataBase();
                     myDB.insertDataIntoAllColumns("staff", "" + usernameTextField.getText() + " "
                             + ", '" + departmentComboBox.getSelectedItem() + "' "
                             + ", '" + jobComboBox.getSelectedItem() + "' ");
 
                 } else if (whoRegister.equals("student")) {
+                    myDB.connectToDataBase();
                     myDB.insertDataIntoAllColumns("student", "'" + usernameTextField.getText() + "' "
                             + ", '" + departmentComboBox.getSelectedItem() + "' "
                             + ", '" + jobComboBox.getSelectedItem() + "' "
                             + ", " + levelComboBox.getSelectedItem() + " ");
-                }
 
+                }
+                myDB.connectToDataBase();
                 myDB.insertDataIntoAllColumns("personal_info", "'" + usernameTextField.getText() + "' "
                         + ", '" + nameTextField.getText() + "' " + ", '" + idTextField3.getText() + "' "
                         + ", '" + birthDayTextField.getText() + "' " + ", '" + addressTextField.getText() + "' "
@@ -327,7 +338,13 @@ public class Register extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Succesfully Added");
 
             } catch (SQLException ex) {
-                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex.getMessage());
+            } finally {
+                try {
+                    myDB.closeDataBaseConnection();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_registerButtonActionPerformed
@@ -348,70 +365,112 @@ public class Register extends javax.swing.JPanel {
         return false;
     }
 
-    private ArrayList< String> data = new ArrayList<>();
+    private int isUserExist() {
+        if (usernameTextField.getText().matches("[0-9]+")) {
+            try {
+                myDB.connectToDataBase();
+                for (Table.Column column : myDB.getColumnsData("personal_info", "id")) {
 
-    private boolean isUserExist() {
-        try {
-            myDB.connectToDataBase();
-            data = myDB.getSpecificTableData("personal_info", "id");
-            for (String user : data) {
-                if (user.equals(usernameTextField.getText())) {
-                    return true;
+                    for (String info : column.getColumnsDatas()) {
+                        if (info.equals(usernameTextField.getText())) {
+                            return 1;
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            } finally {
+                try {
+                    myDB.closeDataBaseConnection();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            return 2;
         }
-        return false;
+        return 0;
     }
 
-    private boolean isnationalIDExist() {
-        try {
-            myDB.connectToDataBase();
-            data = myDB.getSpecificTableData("personal_info", "national_id");
-            for (String user : data) {
-                if (user.equals(idTextField3.getText())) {
-                    return true;
+    private int isnationalIDExist() {
+        if (idTextField3.getText().matches("[0-9]+")) {
+            try {
+                myDB.connectToDataBase();
+                for (Table.Column column : myDB.getColumnsData("personal_info", "national_id")) {
+
+                    for (String info : column.getColumnsDatas()) {
+                        if (info.equals(idTextField3.getText())) {
+                            return 1;
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            } finally {
+                try {
+                    myDB.closeDataBaseConnection();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            return 2;
         }
-        return false;
+        return 0;
     }
 
-    private boolean isEmailExist() {
+    private int isEmailExist() {
+        //if (emailTextField.getText().matches("[0-9]+")) {
         try {
             myDB.connectToDataBase();
-            data = myDB.getSpecificTableData("personal_info", "email");
-            for (String user : data) {
-                if (user.equals(emailTextField.getText())) {
-                    return true;
+            for (Table.Column column : myDB.getColumnsData("personal_info", "email")) {
+
+                for (String info : column.getColumnsDatas()) {
+                    if (info.equals(emailTextField.getText())) {
+                        return 1;
+                    }
                 }
             }
-
         } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+
+            System.out.println(ex.getMessage());
+        } finally {
+            try {
+                myDB.closeDataBaseConnection();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
-        return false;
+//        } else {
+//            return 2;
+//        }
+        return 0;
     }
 
-    private boolean isMobileExist() {
-        try {
-            myDB.connectToDataBase();
-            data = myDB.getSpecificTableData("personal_info", "mobile");
-            for (String user : data) {
-                if (user.equals(mobileTextField.getText())) {
-                    return true;
+    private int isMobileExist() {
+        if (mobileTextField.getText().matches("[0-9]+")) {
+            try {
+                myDB.connectToDataBase();
+                for (Table.Column column : myDB.getColumnsData("personal_info", "mobile")) {
+                    for (String info : column.getColumnsDatas()) {
+                        if (info.equals(mobileTextField.getText())) {
+                            return 1;
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            } finally {
+                try {
+                    myDB.closeDataBaseConnection();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            return 2;
         }
-        return false;
+        return 0;
     }
 
     private boolean isJobNotSelected() {

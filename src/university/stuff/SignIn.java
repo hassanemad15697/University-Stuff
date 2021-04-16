@@ -130,29 +130,37 @@ public class SignIn extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
 
-            myDB.connectToDataBase();
-            data = myDB.getSpecificTableDataWithCondition("user", "password", "id = '" + userTextField.getText() + "'");
-            if (data != null) {
-                if (data.get(0).equals(new String(passwordField.getPassword()))) {
-                    new Home(userTextField.getText());
-                    this.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Wronge Password ");
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "User Not Exists");
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        } finally {
+        if (userTextField.getText().matches("[0-9]+")) {
             try {
-                myDB.closeDataBaseConnection();
+                myDB.connectToDataBase();
+                data = myDB.getOneColumnDataWithCondition("user", "password", "id = " + userTextField.getText().trim());
+
+                if (data != null) {
+                    if (data.get(0).equals(new String(passwordField.getPassword()))) {
+                        new Home(userTextField.getText());
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Wronge Password ");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "User Not Exists");
+                }
+
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
+            } finally {
+                try {
+                    myDB.closeDataBaseConnection();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "User Code is numbers only");
         }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

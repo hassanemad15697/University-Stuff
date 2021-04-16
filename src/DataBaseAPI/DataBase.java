@@ -30,30 +30,33 @@ public class DataBase {
     private ResultSet rslt;
     private DatabaseMetaData md;
     private ArrayList<Table> DataBase = new ArrayList<>();
-    private ArrayList< Table.Column> columnsHolder = new ArrayList<>();
-    private ArrayList< String> dataHolder = new ArrayList<>();
+    private ArrayList<Table> tablesHolder = new ArrayList<>();
+    private ArrayList<Column> columnsHolder = new ArrayList<>();
+    private ArrayList<String> dataHolder = new ArrayList<>();
 
     public Connection connectToDataBase() throws SQLException {
         conn = DriverManager.getConnection(host, username, password);
-        //execute("");
-        dataBaseStructure();
+        getDataBaseStructure();
         System.out.println("Connected!");
         return conn;
     }
 
     public void closeDataBaseConnection() throws SQLException {
-
-            if (stmnt != null) {
-                stmnt.close();
-                System.out.println("Prepared Statement colsed!");
-            }
-            if (conn != null) {
-                conn.close();
-                System.out.println("Connection colsed!");
-            }
+        getDataBaseStructure();
+        if (rslt != null) {
+            rslt.close();
+            System.out.println("Result Set colsed!");
+        }
+        if (stmnt != null) {
+            stmnt.close();
+            System.out.println("Prepared Statement colsed!");
+        }
+        if (conn != null) {
+            conn.close();
+            System.out.println("Connection colsed!");
+        }
 
     }
-
 
     private ResultSet executeQuery(String query) throws SQLException {
         stmnt = conn.prepareStatement(query);
@@ -65,15 +68,123 @@ public class DataBase {
         stmnt.execute();
     }
 
-    private ArrayList<String> getColumnsNames(String columnsName) {
+    private ArrayList<String> getSeparatedNames(String Names) {
         ArrayList<String> columnsNames = new ArrayList<>();
-        for (String string : new ArrayList<>(Arrays.asList(columnsName.split(",")))) {
+        for (String string : new ArrayList<>(Arrays.asList(Names.split(",")))) {
             columnsNames.add(string.trim());
         }
         return columnsNames;
     }
 
-    public ArrayList<Table> dataBaseStructure() throws SQLException {
+    private Table getCustomTableStructure(String tablesNames, String columnsNames, String customTableName) {
+        Table customTable = new Table(customTableName);
+        int tablesCounter = 0, columnsCounter = 0;
+        for (Table table : DataBase) {
+            if (getSeparatedNames(tablesNames.trim()).contains(table.getTableName())) {
+                tablesCounter++;
+                //System.err.println("T : " + tablesCounter + "\t" + table.getTableName());
+                for (Column columnName : table.getColumnsNames()) {
+                    if (getSeparatedNames(columnsNames.trim()).contains(columnName.getColumnName())) {
+                        columnsCounter++;
+                        customTable.addColumn(columnName.getColumnName(), columnName.getColumnDataType());
+                        //System.err.println("C : " + columnsCounter + "\t" + columnName.getColumnName());
+                    }
+                }
+            }
+        }
+
+        if (getSeparatedNames(tablesNames.trim()).size() == tablesCounter && getSeparatedNames(columnsNames.trim()).size() == columnsCounter) {
+            return customTable;
+        }
+
+        return null;
+    }
+
+    public void createTable(String tableName, String columnsValues) throws SQLException {
+        execute("CREATE TABLE " + tableName + "( " + columnsValues + " )");
+        System.out.println("Table Created!!");
+        getDataBaseStructure();
+    }
+
+    public void renameTable(String oldTableName, String newTableName) throws SQLException {
+        execute("ALTER TABLE " + oldTableName + " RENAME TO " + newTableName);
+        System.out.println("Table name updated!!");
+        getDataBaseStructure();
+    }
+
+    public void deleteTable(String tableName) throws SQLException {
+        execute("DROP TABLE " + tableName);
+        System.out.println("Table deleted!!");
+        getDataBaseStructure();
+    }
+
+    public void renameColumn(String tableName, String oldColumnName, String newColumnNameWithDataType) throws SQLException {
+        execute("ALTER TABLE " + tableName + " CHANGE " + oldColumnName + " " + newColumnNameWithDataType);
+        System.out.println("Column name updated!!");
+        getDataBaseStructure();
+    }
+
+    public void modifyColumn(String tableName, String ColumnName, String newColumnDataType) throws SQLException {
+        execute("ALTER TABLE " + tableName + " MODIFY " + ColumnName + " " + newColumnDataType);
+        System.out.println("Column data types updated!!");
+        getDataBaseStructure();
+    }
+
+    public void addOneColumn(String tableName, String NewColumnName, String newColumnDataType) throws SQLException {
+        execute("ALTER TABLE " + tableName + " ADD " + NewColumnName + " " + newColumnDataType);
+        System.out.println("Column " + NewColumnName + " added!!");
+        getDataBaseStructure();
+    }
+
+    public void addMultipleColumns(String tableName, String NewColumnsNames) throws SQLException {
+        execute("ALTER TABLE " + tableName + " ADD " + "( " + NewColumnsNames + " )");
+        System.out.println("Columns  added!!");
+        getDataBaseStructure();
+    }
+
+    public void addPrimaryKey(String tableName, String constraintName, String ColumnNames) throws SQLException {
+        execute("ALTER TABLE " + tableName + " ADD PRIMARY KEY ( " + ColumnNames + " )");
+        System.out.println("primary key  added!!");
+        getDataBaseStructure();
+    }
+
+    public void addForeignKey(String tableName, String columnName, String foreignTableName, String foreignColumnName) throws SQLException {
+        execute("ALTER TABLE " + tableName + " ADD FOREIGN KEY ( " + columnName + " ) REFERENCES " + foreignTableName + "( " + foreignColumnName + " )");
+        System.out.println("foreign key  added!!");
+        getDataBaseStructure();
+    }
+
+    public void DeleteColumn(String tableName, String ColumnName) throws SQLException {
+        execute("ALTER TABLE " + tableName + " DROP " + ColumnName);
+        System.out.println("Column " + ColumnName + " deleted!!");
+        getDataBaseStructure();
+    }
+
+    public void insertDataIntoSpecficColumns(String tableName, String columnsNames, String columnsValues) throws SQLException {
+        execute("INSERT INTO " + tableName + " ( " + columnsNames + " ) " + " VALUES " + " ( " + columnsValues + " ) ");
+        System.out.println("Row Inserted!!");
+        getDataBaseStructure();
+    }
+
+    public void insertDataIntoAllColumns(String tableName, String columnsValues) throws SQLException {
+        execute("INSERT INTO " + tableName + " VALUES " + " ( " + columnsValues + " ) ");
+        System.out.println("Row Inserted!!");
+        getDataBaseStructure();
+    }
+
+    public void updateDataIntoSpecficColumns(String tableName, String columnNameWithUpdatedData, String condition) throws SQLException {
+        execute("UPDATE " + tableName + " SET " + columnNameWithUpdatedData + " WHERE " + condition);
+        System.out.println("Data Updated!!");
+        getDataBaseStructure();
+    }
+
+    public void deleteRow(String tableName, String condition) throws SQLException {
+        execute("DELETE FROM " + tableName + " WHERE " + condition);
+        System.out.println("Row Data DELETED!!");
+        getDataBaseStructure();
+    }
+
+    public ArrayList<Table> getDataBaseStructure() throws SQLException {
         DataBase.clear();
         md = conn.getMetaData();
         ResultSet tables = md.getTables(null, null, "%", null);
@@ -94,100 +205,16 @@ public class DataBase {
 
     public void showDataBaseStructure() throws SQLException {
 
-        for (Table table : dataBaseStructure()) {
+        for (Table table : getDataBaseStructure()) {
             System.out.print(table.getTableName() + "\t:");
-            for (Table.Column columns : table.getColumnsNames()) {
+            for (Column columns : table.getColumnsNames()) {
                 System.out.print(columns.getColumnName() + "(" + columns.getColumnDataType() + ")" + "\t");
             }
             System.out.println();
         }
     }
 
-    public void createTable(String tableName, String columnsValues) throws SQLException {
-        execute("CREATE TABLE " + tableName + "( " + columnsValues + " )");
-        System.out.println("Table Created!!");
-        dataBaseStructure();
-    }
-
-    public void renameTable(String oldTableName, String newTableName) throws SQLException {
-        execute("ALTER TABLE " + oldTableName + " RENAME TO " + newTableName);
-        System.out.println("Table name updated!!");
-        dataBaseStructure();
-    }
-
-    public void deleteTable(String tableName) throws SQLException {
-        execute("DROP TABLE " + tableName);
-        System.out.println("Table deleted!!");
-        dataBaseStructure();
-    }
-
-    public void renameColumn(String tableName, String oldColumnName, String newColumnNameWithDataType) throws SQLException {
-        execute("ALTER TABLE " + tableName + " CHANGE " + oldColumnName + " " + newColumnNameWithDataType);
-        System.out.println("Column name updated!!");
-        dataBaseStructure();
-    }
-
-    public void modifyColumn(String tableName, String ColumnName, String newColumnDataType) throws SQLException {
-        execute("ALTER TABLE " + tableName + " MODIFY " + ColumnName + " " + newColumnDataType);
-        System.out.println("Column data types updated!!");
-        dataBaseStructure();
-    }
-
-    public void addOneColumn(String tableName, String NewColumnName, String newColumnDataType) throws SQLException {
-        execute("ALTER TABLE " + tableName + " ADD " + NewColumnName + " " + newColumnDataType);
-        System.out.println("Column " + NewColumnName + " added!!");
-        dataBaseStructure();
-    }
-
-    public void addMultipleColumns(String tableName, String NewColumnsNames) throws SQLException {
-        execute("ALTER TABLE " + tableName + " ADD " + "( " + NewColumnsNames + " )");
-        System.out.println("Columns  added!!");
-        dataBaseStructure();
-    }
-
-    public void addPrimaryKey(String tableName, String constraintName, String ColumnNames) throws SQLException {
-        execute("ALTER TABLE " + tableName + " ADD PRIMARY KEY ( " + ColumnNames + " )");
-        System.out.println("primary key  added!!");
-        dataBaseStructure();
-    }
-
-    public void addForeignKey(String tableName, String columnName, String foreignTableName, String foreignColumnName) throws SQLException {
-        execute("ALTER TABLE " + tableName + " ADD FOREIGN KEY ( " + columnName + " ) REFERENCES " + foreignTableName + "( " + foreignColumnName + " )");
-        System.out.println("foreign key  added!!");
-        dataBaseStructure();
-    }
-
-    public void DeleteColumn(String tableName, String ColumnName) throws SQLException {
-        execute("ALTER TABLE " + tableName + " DROP " + ColumnName);
-        System.out.println("Column " + ColumnName + " deleted!!");
-        dataBaseStructure();
-    }
-
-    public void insertDataIntoSpecficColumns(String tableName, String columnsNames, String columnsValues) throws SQLException {
-        execute("INSERT INTO " + tableName + " ( " + columnsNames + " ) " + " VALUES " + " ( " + columnsValues + " ) ");
-        System.out.println("Row Inserted!!");
-        dataBaseStructure();
-    }
-
-    public void insertDataIntoAllColumns(String tableName, String columnsValues) throws SQLException {
-        execute("INSERT INTO " + tableName + " VALUES " + " ( " + columnsValues + " ) ");
-        System.out.println("Row Inserted!!");
-        dataBaseStructure();
-    }
-
-    public void updateDataIntoSpecficColumns(String tableName, String columnNameWithUpdatedData, String condition) throws SQLException {
-        execute("UPDATE " + tableName + " SET " + columnNameWithUpdatedData + " WHERE " + condition);
-        System.out.println("Data Updated!!");
-        dataBaseStructure();
-    }
-
-    public void deleteRow(String tableName, String condition) throws SQLException {
-        execute("DELETE FROM " + tableName + " WHERE " + condition);
-        System.out.println("Row Data DELETED!!");
-        dataBaseStructure();
-    }
-
-    public ArrayList<Table.Column> getAllTableData(String tableName) throws SQLException {
+    public Table getAllTableData(String tableName) throws SQLException {
 
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
@@ -198,16 +225,16 @@ public class DataBase {
                 } else {
 
                     //clear old data
-                    for (Table.Column column : table.getColumnsNames()) {
+                    for (Column column : table.getColumnsNames()) {
                         column.getColumnsDatas().clear();
                     }
                     //adding new data
                     do {
-                        for (Table.Column column : table.getColumnsNames()) {
+                        for (Column column : table.getColumnsNames()) {
                             column.addData(rslt.getString(column.getColumnName()));
                         }
                     } while (rslt.next());
-                    return table.getColumnsNames();
+                    return table;
                 }
             }
         }
@@ -215,14 +242,15 @@ public class DataBase {
     }
 
     public void showAllTableData(String tableName) throws SQLException {
-        columnsHolder = getAllTableData(tableName.trim());
-        if (columnsHolder == null) {
+        Table table = getAllTableData(tableName.trim());
+        if (table == null) {
             System.err.println("null");
         } else {
-            for (Table.Column col : columnsHolder) {
-                System.out.print(col.getColumnName() + "\t\t");
+            System.out.println("________________________\nTable : " + table.getTableName());
+            for (Column col : table.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
                 for (String columnsData : col.getColumnsDatas()) {
-                    System.out.print(columnsData + "\t");
+                    System.out.print(columnsData + " , ");
                 }
                 System.out.println("");
             }
@@ -230,12 +258,12 @@ public class DataBase {
 
     }
 
-    public ArrayList<String> getOneColumnData(String tableName, String columnName) throws SQLException {
+    private Column getOneColumn(String tableName, String columnName, String Query) throws SQLException {
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
-                for (Table.Column column : table.getColumnsNames()) {
+                for (Column column : table.getColumnsNames()) {
                     if (column.getColumnName().equals(columnName.trim())) {
-                        rslt = executeQuery("SELECT " + columnName.trim() + " FROM " + tableName.trim());
+                        rslt = executeQuery(Query);
                         if (rslt.next() == false) {
                             return null;
                         } else {
@@ -245,235 +273,210 @@ public class DataBase {
                             do {
                                 column.addData(rslt.getString(column.getColumnName()));
                             } while (rslt.next());
-                            return column.getColumnsDatas();
+                            return column;
                         }
                     }
                 }
             }
         }
         return null;
+    }
+
+    private void showOneColumn(Column column) throws SQLException {
+        if (column == null) {
+            System.err.println("null");
+        } else {
+            System.out.println("________________________\nColumn : " + column.getColumnName() + "\nData : ");
+            for (String data : column.getColumnsDatas()) {
+                System.out.println(data);
+            }
+            System.out.println("________________________\n");
+        }
+    }
+
+    public Column getOneColumnData(String tableName, String columnName) throws SQLException {
+        return getOneColumn(tableName, columnName, "SELECT " + columnName.trim() + " FROM " + tableName.trim());
     }
 
     public void showOneColumnData(String tableName, String columnName) throws SQLException {
-        dataHolder = getOneColumnData(tableName.trim(), columnName.trim());
-        if (dataHolder == null) {
-            System.err.println("null");
-        } else {
-            for (String d : dataHolder) {
-                System.out.println(d);
-            }
-        }
+        Column column = getOneColumnData(tableName.trim(), columnName.trim());
+        showOneColumn(column);
 
     }
 
-    public ArrayList<String> getOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                for (Table.Column column : table.getColumnsNames()) {
-                    if (column.getColumnName().equals(columnName.trim())) {
-                        rslt = executeQuery("SELECT " + columnName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
-                        if (rslt.next() == false) {
-                            return null;
-                        } else {
-                            //delete old data
-                            column.getColumnsDatas().clear();
-                            //add new data
-                            do {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            } while (rslt.next());
-                            return column.getColumnsDatas();
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+    public Column getOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
+        return getOneColumn(tableName, columnName, "SELECT " + columnName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
     }
 
     public void showOneColumnDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
-        dataHolder = getOneColumnDataWithCondition(tableName.trim(), columnName.trim(), condition.trim());
-        if (dataHolder == null) {
-            System.err.println("null");
-        } else {
-            for (String d : dataHolder) {
-                System.out.println(d);
-            }
-        }
-
+        Column column = getOneColumnDataWithCondition(tableName.trim(), columnName.trim(), condition.trim());
+        showOneColumn(column);
     }
 
-    public ArrayList<String> getOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                for (Table.Column column : table.getColumnsNames()) {
-                    if (column.getColumnName().equals(columnName.trim())) {
-                        rslt = executeQuery("SELECT " + columnName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
-                        if (rslt.next() == false) {
-                            return null;
-                        } else {
-                            //delete old data
-                            column.getColumnsDatas().clear();
-                            //add new data
-                            do {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            } while (rslt.next());
-                            return column.getColumnsDatas();
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+    public Column getOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
+        return getOneColumn(tableName, columnName, "SELECT " + columnName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
     }
 
     public void showOneColumnDataWithConditionByOrder(String tableName, String columnName, String condition, String Order) throws SQLException {
-        dataHolder = getOneColumnDataWithConditionByOrder(tableName.trim(), columnName.trim(), condition.trim(), Order.trim());
-        if (dataHolder == null) {
-            System.err.println("null");
-        } else {
-            for (String d : dataHolder) {
-                System.out.println(d);
-            }
-        }
+        Column column = getOneColumnDataWithConditionByOrder(tableName.trim(), columnName.trim(), condition.trim(), Order.trim());
+        showOneColumn(column);
 
     }
 
-    public ArrayList<Table.Column> getColumnsData(String tableName, String columnsName) throws SQLException {
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                rslt = executeQuery("SELECT " + columnsName.trim() + " FROM " + tableName.trim());
-                if (rslt.next() == false) {
-                    return null;
-                } else {
-                    //clear old data
-                    for (Table.Column column : table.getColumnsNames()) {
-                        if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                            column.getColumnsDatas().clear();
-                        }
+    public Table getColumnsData(String tableName, String columnsNames) throws SQLException {
+        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
+        if (customTable != null) {
+            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim());
+            if (rslt.next() == false) {
+                return null;
+            } else {
+                do {
+                    for (Column column : customTable.getColumnsNames()) {
+                        column.addData(rslt.getString(column.getColumnName()));
                     }
-                    do {
-                        for (Table.Column column : table.getColumnsNames()) {
-                            if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            }
-                        }
-                    } while (rslt.next());
-                    return table.getColumnsNames();
-
-                }
-
+                } while (rslt.next());
+                return customTable;
             }
+
         }
+
         return null;
     }
 
-    public void showColumnsData(String tableName, String columnsName) throws SQLException {
-        columnsHolder = getColumnsData(tableName.trim(), columnsName.trim());
-        if (columnsHolder == null) {
+    public void showColumnsData(String tableName, String columnsNames) throws SQLException {
+        Table customTable = getColumnsData(tableName.trim(), columnsNames.trim());
+        if (customTable == null) {
             System.err.println("null");
         } else {
-            for (Table.Column col : columnsHolder) {
-                if (!col.getColumnsDatas().isEmpty()) {
-                    System.out.print(col.getColumnName() + "\t\t");
+            System.out.println("________________________\nTable : " + customTable.getTableName());
+            for (Column col : customTable.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
+                if (col.getColumnsDatas() != null) {
                     for (String columnsData : col.getColumnsDatas()) {
                         System.out.print(columnsData + "\t");
                     }
                 }
                 System.out.println("");
             }
+            System.out.println("________________________");
         }
 
     }
 
-    public ArrayList<Table.Column> getColumnsDataWithCondition(String tableName, String columnsName, String condition) throws SQLException {
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                rslt = executeQuery("SELECT " + columnsName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
-                if (rslt.next() == false) {
-                    return null;
-                } else {
-                    //clear old data
-                    for (Table.Column column : table.getColumnsNames()) {
-                        if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                            column.getColumnsDatas().clear();
-                        }
+    public Table getColumnsDataWithCondition(String tableName, String columnsNames, String condition) throws SQLException {
+
+        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
+        if (customTable != null) {
+            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
+            if (rslt.next() == false) {
+                return null;
+            } else {
+                do {
+                    for (Column column : customTable.getColumnsNames()) {
+                        column.addData(rslt.getString(column.getColumnName()));
                     }
-                    do {
-                        for (Table.Column column : table.getColumnsNames()) {
-                            if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            }
-                        }
-                    } while (rslt.next());
-                    return table.getColumnsNames();
-
-                }
-
+                } while (rslt.next());
+                return customTable;
             }
+
         }
+
         return null;
     }
 
-    public void showColumnsDataWithCondition(String tableName, String columnName, String condition) throws SQLException {
-        columnsHolder = getColumnsDataWithCondition(tableName.trim(), columnName.trim(), condition.trim());
-        if (columnsHolder == null) {
+    public void showColumnsDataWithCondition(String tableName, String columnNames, String condition) throws SQLException {
+        Table customTable = getColumnsDataWithCondition(tableName.trim(), columnNames.trim(), condition.trim());
+        if (customTable == null) {
             System.err.println("null");
         } else {
-            for (Table.Column col : columnsHolder) {
-                if (!col.getColumnsDatas().isEmpty()) {
-                    System.out.print(col.getColumnName() + "\t\t");
+            System.out.println("________________________\nTable : " + customTable.getTableName());
+            for (Column col : customTable.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
+                if (col.getColumnsDatas() != null) {
                     for (String columnsData : col.getColumnsDatas()) {
                         System.out.print(columnsData + "\t");
                     }
                 }
                 System.out.println("");
             }
+            System.out.println("________________________");
         }
     }
 
-    public ArrayList<Table.Column> getColumnsDataWithConditionByOrder(String tableName, String columnsName, String condition, String Order) throws SQLException {
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                rslt = executeQuery("SELECT " + columnsName.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
-                if (rslt.next() == false) {
-                    return null;
-                } else {
-                    //clear old data
-                    for (Table.Column column : table.getColumnsNames()) {
-                        if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                            column.getColumnsDatas().clear();
-                        }
+    public Table getColumnsDataWithConditionByOrder(String tableName, String columnsNames, String condition, String Order) throws SQLException {
+
+        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
+        if (customTable != null) {
+            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
+            if (rslt.next() == false) {
+                return null;
+            } else {
+                do {
+                    for (Column column : customTable.getColumnsNames()) {
+                        column.addData(rslt.getString(column.getColumnName()));
                     }
-                    do {
-                        for (Table.Column column : table.getColumnsNames()) {
-                            if (getColumnsNames(columnsName.trim()).contains(column.getColumnName())) {
-                                column.addData(rslt.getString(column.getColumnName()));
-                            }
-                        }
-                    } while (rslt.next());
-                    return table.getColumnsNames();
-
-                }
-
+                } while (rslt.next());
+                return customTable;
             }
+
         }
         return null;
     }
 
-    public void showColumnsDataWithConditionByOrder(String tableName, String columns, String condition, String Order) throws SQLException {
-        columnsHolder = getColumnsDataWithConditionByOrder(tableName.trim(), columns.trim(), condition.trim(), Order.trim());
-        if (columnsHolder == null) {
+    public void showColumnsDataWithConditionByOrder(String tableName, String columnNames, String condition, String Order) throws SQLException {
+        Table customTable = getColumnsDataWithConditionByOrder(tableName.trim(), columnNames.trim(), condition.trim(), Order.trim());
+        if (customTable == null) {
             System.err.println("null");
         } else {
-            for (Table.Column col : columnsHolder) {
-                if (!col.getColumnsDatas().isEmpty()) {
-                    System.out.print(col.getColumnName() + "\t\t");
+            System.out.println("________________________\nTable : " + customTable.getTableName());
+            for (Column col : customTable.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
+                if (col.getColumnsDatas() != null) {
                     for (String columnsData : col.getColumnsDatas()) {
-                        System.out.print(columnsData + "\t");
+                        System.out.print(columnsData + " , ");
                     }
                 }
                 System.out.println("");
             }
+            System.out.println("________________________");
+        }
+    }
+
+    public Table getColumnsDataWithJoin(String tablesNames, String columnsNames, String condition) throws SQLException {
+        Table customTable = getCustomTableStructure(tablesNames, columnsNames, "Custom Table");
+        if (customTable != null) {
+            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tablesNames.trim() + " WHERE " + condition.trim());
+            if (rslt.next() == false) {
+                return null;
+            } else {
+                do {
+                    for (Column column : customTable.getColumnsNames()) {
+                        column.addData(rslt.getString(column.getColumnName()));
+                    }
+                } while (rslt.next());
+                return customTable;
+            }
+
+        }
+        return null;
+    }
+
+    public void showColumnsDataWithJoin(String tablesNames, String columnsNames, String condition) throws SQLException {
+        Table customTable = getColumnsDataWithJoin(tablesNames.trim(), columnsNames.trim(), condition.trim());
+        if (customTable == null) {
+            System.err.println("null");
+        } else {
+            System.out.println("________________________\nTable : " + customTable.getTableName());
+            for (Column col : customTable.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
+                if (col.getColumnsDatas() != null) {
+                    for (String columnsData : col.getColumnsDatas()) {
+                        System.out.print(columnsData + " , ");
+                    }
+                }
+                System.out.println("");
+            }
+            System.out.println("________________________");
         }
     }
 
@@ -484,10 +487,10 @@ public class DataBase {
         m.setColumnCount(0);
 
         //set new columns
-        DataBase = dataBaseStructure();
+        DataBase = getDataBaseStructure();
         for (Table table : DataBase) {
             if (table.getTableName().equals(tableName.trim())) {
-                for (Table.Column col : table.getColumnsNames()) {
+                for (Column col : table.getColumnsNames()) {
                     m.addColumn(col.getColumnName());
                 }
             }
@@ -496,7 +499,7 @@ public class DataBase {
         ////delete old columns data
         m.setRowCount(0);
 
-        columnsHolder = getAllTableData(tableName.trim());
+        columnsHolder = getAllTableData(tableName.trim()).getColumnsNames();
         if (columnsHolder != null) {
             //set columns data
             Object[] os = new Object[columnsHolder.size()];
@@ -512,7 +515,7 @@ public class DataBase {
     }
 
     public String makeJTree(JTree tree) throws SQLException {
-        DataBase = dataBaseStructure();
+        DataBase = getDataBaseStructure();
         String firstTable = DataBase.get(0).getTableName();
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataBaseName);
@@ -525,7 +528,7 @@ public class DataBase {
         }
         int i = 0;
         for (DefaultMutableTreeNode colTreeNode : tablesTreeNode) {
-            for (Table.Column column : DataBase.get(i).getColumnsNames()) {
+            for (Column column : DataBase.get(i).getColumnsNames()) {
                 colTreeNode.add(new DefaultMutableTreeNode(column.getColumnName()));
             }
             i++;

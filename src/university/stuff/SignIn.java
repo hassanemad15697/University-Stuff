@@ -26,8 +26,8 @@ public class SignIn extends javax.swing.JFrame {
     }
     DataBase myDB = new DataBase();
     private ArrayList<Table> DataBase = new ArrayList<>();
-    private ArrayList< Table.Column> column = new ArrayList<>();
-    private ArrayList< String> data = new ArrayList<>();
+    private ArrayList< Table.Column> columnsHolder = new ArrayList<>();
+    private ArrayList< String> dataHolder = new ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,19 +134,18 @@ public class SignIn extends javax.swing.JFrame {
         if (userTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                data = myDB.getOneColumnDataWithCondition("user", "password", "id = " + userTextField.getText().trim());
-
-                if (data != null) {
-                    if (data.get(0).equals(new String(passwordField.getPassword()))) {
-                        new Home(userTextField.getText());
+                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id = " + userTextField.getText().trim());
+                if (columnsHolder != null) {
+                    if (columnsHolder.get(1).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
+                        new Home(userTextField.getText(), columnsHolder.get(2).getColumnsDatas().get(0));
                         this.dispose();
                     } else {
                         JOptionPane.showMessageDialog(this, "Wronge Password ");
                     }
+
                 } else {
                     JOptionPane.showMessageDialog(this, "User Not Exists");
                 }
-
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             } finally {

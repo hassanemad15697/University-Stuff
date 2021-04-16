@@ -5,6 +5,8 @@
  */
 package university.stuff;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author Hassan
@@ -16,14 +18,27 @@ public class Home extends javax.swing.JFrame {
      *
      * @param username
      */
-    public Home(String username) {
+    public Home(String username, String responsibility) {
         initComponents();
-        //if()
+        if (responsibility.equals("empolyee")) {
+            switchPanelTo(empolyeePanel);
+        } else if (responsibility.equals("student")) {
+            switchPanelTo(studentPanel);
+        }
         this.setVisible(true);
     }
 
     private Home() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void switchPanelTo(JPanel panel) {
+        homePanel.removeAll();
+        homePanel.repaint();
+        homePanel.revalidate();
+        homePanel.add(panel);
+        homePanel.repaint();
+        homePanel.revalidate();
     }
 
     /**
@@ -38,7 +53,7 @@ public class Home extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         closeTabButton = new javax.swing.JButton();
         homePanel = new javax.swing.JPanel();
-        managerPanel = new javax.swing.JPanel();
+        empolyeePanel = new javax.swing.JPanel();
         addStudentButton = new javax.swing.JButton();
         addEmpolyeeButton = new javax.swing.JButton();
         studentPanel = new javax.swing.JPanel();
@@ -69,20 +84,20 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout managerPanelLayout = new javax.swing.GroupLayout(managerPanel);
-        managerPanel.setLayout(managerPanelLayout);
-        managerPanelLayout.setHorizontalGroup(
-            managerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(managerPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout empolyeePanelLayout = new javax.swing.GroupLayout(empolyeePanel);
+        empolyeePanel.setLayout(empolyeePanelLayout);
+        empolyeePanelLayout.setHorizontalGroup(
+            empolyeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(empolyeePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(managerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(empolyeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(addStudentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addEmpolyeeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
-        managerPanelLayout.setVerticalGroup(
-            managerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(managerPanelLayout.createSequentialGroup()
+        empolyeePanelLayout.setVerticalGroup(
+            empolyeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(empolyeePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(addEmpolyeeButton)
                 .addGap(18, 18, 18)
@@ -90,7 +105,7 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap(658, Short.MAX_VALUE))
         );
 
-        homePanel.add(managerPanel, "card2");
+        homePanel.add(empolyeePanel, "card2");
 
         jButton1.setText("Show Exam Result");
 
@@ -142,23 +157,22 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
  Register r = new Register("student");
     private void addEmpolyeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEmpolyeeButtonActionPerformed
-        Register r = null ;
-        if (r.createdStuffNum ==0) {
-            jTabbedPane1.add("Add Empolyee",  new Register("empolyee"));
+        Register r = null;
+        if (r.createdStuffNum == 0) {
+            jTabbedPane1.add("Add Empolyee", new Register("empolyee"));
         }
     }//GEN-LAST:event_addEmpolyeeButtonActionPerformed
 
     private void addStudentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentButtonActionPerformed
-        Register r = null ;
-        if (r.createdStudentNum ==1) {
-            jTabbedPane1.add("Add Student",  new Register("student"));
+        Register r = null;
+        if (r.createdStudentNum == 1) {
+            jTabbedPane1.add("Add Student", new Register("student"));
         }
     }//GEN-LAST:event_addStudentButtonActionPerformed
 
     private void closeTabButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeTabButtonActionPerformed
         jTabbedPane1.remove(jTabbedPane1.getSelectedIndex());
     }//GEN-LAST:event_closeTabButtonActionPerformed
-
 
     /**
      * @param args the command line arguments
@@ -199,10 +213,10 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton addEmpolyeeButton;
     private javax.swing.JButton addStudentButton;
     private javax.swing.JButton closeTabButton;
+    private javax.swing.JPanel empolyeePanel;
     private javax.swing.JPanel homePanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JPanel managerPanel;
     private javax.swing.JPanel studentPanel;
     // End of variables declaration//GEN-END:variables
 }

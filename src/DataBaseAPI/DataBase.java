@@ -323,10 +323,10 @@ public class DataBase {
 
     }
 
-    public Table getColumnsData(String tableName, String columnsNames) throws SQLException {
+    private Table getColumns(String tableName, String columnsNames, String Query) throws SQLException {
         Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
         if (customTable != null) {
-            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim());
+            rslt = executeQuery(Query);
             if (rslt.next() == false) {
                 return null;
             } else {
@@ -341,151 +341,68 @@ public class DataBase {
         }
 
         return null;
+    }
+
+    private void showColumns(Table customTable) {
+        if (customTable == null) {
+            System.err.println("null");
+        } else {
+            System.out.println("________________________\nTable : " + customTable.getTableName());
+            for (Column col : customTable.getColumnsNames()) {
+                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
+                if (col.getColumnsDatas() != null) {
+                    for (String columnsData : col.getColumnsDatas()) {
+                        System.out.print(columnsData + " , ");
+                    }
+                }
+                System.out.println("");
+            }
+            System.out.println("________________________");
+        }
+    }
+
+    public Table getColumnsData(String tableName, String columnsNames) throws SQLException {
+        return getColumns(tableName, columnsNames, "SELECT " + columnsNames.trim() + " FROM " + tableName.trim());
+
     }
 
     public void showColumnsData(String tableName, String columnsNames) throws SQLException {
         Table customTable = getColumnsData(tableName.trim(), columnsNames.trim());
-        if (customTable == null) {
-            System.err.println("null");
-        } else {
-            System.out.println("________________________\nTable : " + customTable.getTableName());
-            for (Column col : customTable.getColumnsNames()) {
-                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
-                if (col.getColumnsDatas() != null) {
-                    for (String columnsData : col.getColumnsDatas()) {
-                        System.out.print(columnsData + "\t");
-                    }
-                }
-                System.out.println("");
-            }
-            System.out.println("________________________");
-        }
+        showColumns(customTable);
 
     }
 
     public Table getColumnsDataWithCondition(String tableName, String columnsNames, String condition) throws SQLException {
-
-        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
-        if (customTable != null) {
-            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
-            if (rslt.next() == false) {
-                return null;
-            } else {
-                do {
-                    for (Column column : customTable.getColumnsNames()) {
-                        column.addData(rslt.getString(column.getColumnName()));
-                    }
-                } while (rslt.next());
-                return customTable;
-            }
-
-        }
-
-        return null;
+        return getColumns(tableName, columnsNames, "SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim());
     }
 
     public void showColumnsDataWithCondition(String tableName, String columnNames, String condition) throws SQLException {
         Table customTable = getColumnsDataWithCondition(tableName.trim(), columnNames.trim(), condition.trim());
-        if (customTable == null) {
-            System.err.println("null");
-        } else {
-            System.out.println("________________________\nTable : " + customTable.getTableName());
-            for (Column col : customTable.getColumnsNames()) {
-                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
-                if (col.getColumnsDatas() != null) {
-                    for (String columnsData : col.getColumnsDatas()) {
-                        System.out.print(columnsData + "\t");
-                    }
-                }
-                System.out.println("");
-            }
-            System.out.println("________________________");
-        }
+        showColumns(customTable);
     }
 
     public Table getColumnsDataWithConditionByOrder(String tableName, String columnsNames, String condition, String Order) throws SQLException {
-
-        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
-        if (customTable != null) {
-            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
-            if (rslt.next() == false) {
-                return null;
-            } else {
-                do {
-                    for (Column column : customTable.getColumnsNames()) {
-                        column.addData(rslt.getString(column.getColumnName()));
-                    }
-                } while (rslt.next());
-                return customTable;
-            }
-
-        }
-        return null;
+        return getColumns(tableName, columnsNames, "SELECT " + columnsNames.trim() + " FROM " + tableName.trim() + " WHERE " + condition.trim() + " ORDER BY " + Order.trim());
     }
 
     public void showColumnsDataWithConditionByOrder(String tableName, String columnNames, String condition, String Order) throws SQLException {
         Table customTable = getColumnsDataWithConditionByOrder(tableName.trim(), columnNames.trim(), condition.trim(), Order.trim());
-        if (customTable == null) {
-            System.err.println("null");
-        } else {
-            System.out.println("________________________\nTable : " + customTable.getTableName());
-            for (Column col : customTable.getColumnsNames()) {
-                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
-                if (col.getColumnsDatas() != null) {
-                    for (String columnsData : col.getColumnsDatas()) {
-                        System.out.print(columnsData + " , ");
-                    }
-                }
-                System.out.println("");
-            }
-            System.out.println("________________________");
-        }
+        showColumns(customTable);
     }
 
     public Table getColumnsDataWithJoin(String tablesNames, String columnsNames, String condition) throws SQLException {
-        Table customTable = getCustomTableStructure(tablesNames, columnsNames, "Custom Table");
-        if (customTable != null) {
-            rslt = executeQuery("SELECT " + columnsNames.trim() + " FROM " + tablesNames.trim() + " WHERE " + condition.trim());
-            if (rslt.next() == false) {
-                return null;
-            } else {
-                do {
-                    for (Column column : customTable.getColumnsNames()) {
-                        column.addData(rslt.getString(column.getColumnName()));
-                    }
-                } while (rslt.next());
-                return customTable;
-            }
-
-        }
-        return null;
+        return getColumns(tablesNames, columnsNames, "SELECT " + columnsNames.trim() + " FROM " + tablesNames.trim() + " WHERE " + condition.trim());
     }
 
     public void showColumnsDataWithJoin(String tablesNames, String columnsNames, String condition) throws SQLException {
         Table customTable = getColumnsDataWithJoin(tablesNames.trim(), columnsNames.trim(), condition.trim());
-        if (customTable == null) {
-            System.err.println("null");
-        } else {
-            System.out.println("________________________\nTable : " + customTable.getTableName());
-            for (Column col : customTable.getColumnsNames()) {
-                System.out.println("________________________\nColumn : " + col.getColumnName() + "\nData : ");
-                if (col.getColumnsDatas() != null) {
-                    for (String columnsData : col.getColumnsDatas()) {
-                        System.out.print(columnsData + " , ");
-                    }
-                }
-                System.out.println("");
-            }
-            System.out.println("________________________");
-        }
+        showColumns(customTable);
     }
 
     public void makeJTable(String tableName, JTable tableOnForm) throws SQLException {
         DefaultTableModel m = (DefaultTableModel) tableOnForm.getModel();
-
         //delete old columns
         m.setColumnCount(0);
-
         //set new columns
         DataBase = getDataBaseStructure();
         for (Table table : DataBase) {
@@ -495,15 +412,12 @@ public class DataBase {
                 }
             }
         }
-
         ////delete old columns data
         m.setRowCount(0);
-
         columnsHolder = getAllTableData(tableName.trim()).getColumnsNames();
         if (columnsHolder != null) {
             //set columns data
             Object[] os = new Object[columnsHolder.size()];
-
             for (int i = 0; i < columnsHolder.get(0).getColumnsDatas().size(); i++) {
                 for (int j = 0; j < columnsHolder.size(); j++) {
                     os[j] = (Object) columnsHolder.get(j).getColumnsDatas().get(i);
@@ -511,7 +425,6 @@ public class DataBase {
                 m.addRow(os);
             }
         }
-
     }
 
     public String makeJTree(JTree tree) throws SQLException {
@@ -520,9 +433,7 @@ public class DataBase {
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataBaseName);
         model.setRoot(root);
-
         ArrayList<DefaultMutableTreeNode> tablesTreeNode = new ArrayList<>();
-
         for (Table table : DataBase) {
             tablesTreeNode.add(new DefaultMutableTreeNode(table.getTableName()));
         }
@@ -533,13 +444,10 @@ public class DataBase {
             }
             i++;
         }
-
         for (DefaultMutableTreeNode table : tablesTreeNode) {
             root.add(table);
         }
-
         model.reload();
         return firstTable;
     }
-
 }

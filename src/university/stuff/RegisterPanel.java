@@ -37,7 +37,7 @@ public class RegisterPanel extends javax.swing.JPanel {
         this.whoRegister = whoRegister;
         initComponents();
 
-        if (whoRegister.equals("empolyee")) {
+        if (whoRegister.equals("staff")) {
             jLabel3.setText("Department");
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(stuff));
             jLabel4.setText("Job");
@@ -48,7 +48,7 @@ public class RegisterPanel extends javax.swing.JPanel {
             departmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(student));
             jLabel4.setText("Specialization");
         }
-        if (whoRegister.equals("empolyee")) {
+        if (whoRegister.equals("staff")) {
             createdStuffNum++;
             System.out.println("createdStuffNum  " + createdStuffNum);
         } else {
@@ -315,7 +315,7 @@ public class RegisterPanel extends javax.swing.JPanel {
                 myDB.insertDataIntoAllColumns("user", "" + usernameTextField.getText() + " "
                         + ", '" + passwordField.getText() + "' , '" + whoRegister + "'");
 
-                if (whoRegister.equals("empolyee")) {
+                if (whoRegister.equals("staff")) {
                     myDB.connectToDataBase();
                     myDB.insertDataIntoAllColumns("staff", "" + usernameTextField.getText() + " "
                             + ", '" + departmentComboBox.getSelectedItem() + "' "

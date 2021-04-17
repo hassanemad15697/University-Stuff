@@ -23,20 +23,19 @@ public class UniversityStuff {
      */
     public static void main(String[] args) {
 
-//            SignIn s = new SignIn();
-//            s.setVisible(true);
-        Table columnsHolder;
-        DataBase myDB = new DataBase();
-        try {
-            myDB.connectToDataBase();
-            //myDB.showAllTableData("user");
-            //myDB.showColumnsDataWithConditionByOrder("personal_info", "name,mobile","id<4","birth");
-  //              myDB.showColumnsData("staff", "id,job");
-            //myDB.showColumnsDataWithJoin("personal_info , staff", "name ,department , job", "personal_info.id=staff.id and staff.id=2");
-            
-            //myDB.showOneColumnDataWithConditionByOrder("personal_info", "name","id<6","birth");
+        new SignIn();
+//        Table columnsHolder;
+//        DataBase myDB = new DataBase();
+//        try {
+//            myDB.connectToDataBase();
+        //myDB.showAllTableData("user");
+        //myDB.showColumnsDataWithConditionByOrder("personal_info", "name,mobile","id<4","birth");
+        //              myDB.showColumnsData("staff", "id,job");
+        //myDB.showColumnsDataWithJoin("personal_info , staff", "name ,department , job", "personal_info.id=staff.id and staff.id=2");
+
+        //myDB.showOneColumnDataWithConditionByOrder("personal_info", "name","id<6","birth");
 //            
-            myDB.showColumnsDataWithJoin("personal_info,staff", "department,name,job", "personal_info.id=staff.id and staff.id=2");
+        // myDB.showColumnsDataWithJoin("personal_info,staff", "department,name,job", "personal_info.id=staff.id and staff.id=2");
 //
 //            if (columnsHolder == null) {
 //                System.err.println("null");
@@ -52,18 +51,17 @@ public class UniversityStuff {
 //                }
 //            }
 //            
-            
-            
-        } catch (SQLException ex) {
-
-        } finally {
-            try {
-                myDB.closeDataBaseConnection();
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-
+//            
+//            
+//        } catch (SQLException ex) {
+//
+//        } finally {
+//            try {
+//                myDB.closeDataBaseConnection();
+//            } catch (SQLException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//        }
     }
 
 }

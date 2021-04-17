@@ -23,11 +23,11 @@ public class SignIn extends javax.swing.JFrame {
      */
     public SignIn() {
         initComponents();
+        this.setVisible(true);
     }
+
     DataBase myDB = new DataBase();
-    private ArrayList<Table> DataBase = new ArrayList<>();
-    private ArrayList<Column> columnsHolder = new ArrayList<>();
-    private ArrayList<String> dataHolder = new ArrayList<>();
+    private Table columnsHolder = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,15 +134,14 @@ public class SignIn extends javax.swing.JFrame {
         if (userTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id = " + userTextField.getText().trim()).getColumnsNames();
+                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id=" + userTextField.getText().trim());
                 if (columnsHolder != null) {
-                    if (columnsHolder.get(1).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
-                        new Home(userTextField.getText(), columnsHolder.get(2).getColumnsDatas().get(0));
+                    if (columnsHolder.getColumnsNames().get(0).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
+                        new Home(userTextField.getText(), columnsHolder.getColumnsNames().get(1).getColumnsDatas().get(0));
                         this.dispose();
                     } else {
                         JOptionPane.showMessageDialog(this, "Wronge Password ");
                     }
-
                 } else {
                     JOptionPane.showMessageDialog(this, "User Not Exists");
                 }

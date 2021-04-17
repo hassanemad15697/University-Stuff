@@ -5,6 +5,11 @@
  */
 package university.stuff;
 
+import DataBaseAPI.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -18,21 +23,57 @@ public class Home extends javax.swing.JFrame {
      *
      * @param username
      */
+    DataBase myDB = new DataBase();
+
     public Home(String username, String responsibility) {
         initComponents();
-        if (responsibility.equals("empolyee")) {
-            switchPanelTo(empolyeePanel);
-        } else if (responsibility.equals("student")) {
-            switchPanelTo(studentPanel);
-        }
+        homeForWho(username, responsibility);
         this.setVisible(true);
     }
 
     private Home() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    Table table;
 
-    public void switchPanelTo(JPanel panel) {
+    private void homeForWho(String username, String responsibility) {
+        JLabel[] dataLabels = {jLabel1, jLabel2, jLabel3, jLabel4};
+        try {
+            myDB.connectToDataBase();
+            if (responsibility.equals("staff")) {
+                switchPanelTo(empolyeePanel);
+                table = myDB.getColumnsDataWithJoin("personal_info,staff", "name ,department , job", "personal_info.id=staff.id and staff.id=" + username);
+                int c = 0;
+                for (Column columnsName : table.getColumnsNames()) {
+                    dataLabels[c].setText(columnsName.getColumnsDatas().get(0));
+                    c++;
+                }
+            } else if (responsibility.equals("student")) {
+                switchPanelTo(studentPanel);
+                table =myDB.getColumnsDataWithJoin("personal_info,student", "name ,qualification,specialization , level", "personal_info.id=student.id and student.id=" + username);
+                int c = 0;
+                for (Column columnsName : table.getColumnsNames()) {
+                    dataLabels[c].setText(columnsName.getColumnsDatas().get(0));
+                    c++;
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        } finally {
+            try {
+                myDB.closeDataBaseConnection();
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
+
+    }
+
+    private void getUserData(String responsibility) {
+
+    }
+
+    private void switchPanelTo(JPanel panel) {
         homePanel.removeAll();
         homePanel.repaint();
         homePanel.revalidate();
@@ -106,7 +147,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(addEmpolyeeButton)
                 .addGap(18, 18, 18)
                 .addComponent(addStudentButton)
-                .addContainerGap(658, Short.MAX_VALUE))
+                .addContainerGap(782, Short.MAX_VALUE))
         );
 
         homePanel.add(empolyeePanel, "card2");
@@ -127,18 +168,10 @@ public class Home extends javax.swing.JFrame {
             .addGroup(studentPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addContainerGap(701, Short.MAX_VALUE))
+                .addContainerGap(825, Short.MAX_VALUE))
         );
 
         homePanel.add(studentPanel, "card3");
-
-        jLabel1.setText("jLabel1");
-
-        jLabel2.setText("jLabel2");
-
-        jLabel3.setText("jLabel3");
-
-        jLabel4.setText("jLabel4");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -157,7 +190,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 312, Short.MAX_VALUE)
                 .addComponent(closeTabButton)
                 .addContainerGap())
         );
@@ -166,15 +199,15 @@ public class Home extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(closeTabButton))
+                    .addComponent(closeTabButton)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addComponent(homePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)))
+                    .addComponent(homePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1)))
         );
 
         pack();
@@ -184,7 +217,7 @@ public class Home extends javax.swing.JFrame {
     private void addEmpolyeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEmpolyeeButtonActionPerformed
         RegisterPanel r = null;
         if (r.createdStuffNum == 0) {
-            jTabbedPane1.add("Add Empolyee", new RegisterPanel("empolyee"));
+            jTabbedPane1.add("Add Empolyee", new RegisterPanel("staff"));
         }
     }//GEN-LAST:event_addEmpolyeeButtonActionPerformed
 

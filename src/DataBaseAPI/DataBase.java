@@ -326,7 +326,7 @@ public class DataBase {
     }
 
     private Table getColumns(String tableName, String columnsNames, String Query) throws SQLException {
-        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);;
+        Table customTable = getCustomTableStructure(tableName, columnsNames, tableName);
         if (customTable != null) {
             rslt = executeQuery(Query);
             if (rslt.next() == false) {

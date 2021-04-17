@@ -26,8 +26,8 @@ public class SignIn extends javax.swing.JFrame {
     }
     DataBase myDB = new DataBase();
     private ArrayList<Table> DataBase = new ArrayList<>();
-    private ArrayList< Table.Column> columnsHolder = new ArrayList<>();
-    private ArrayList< String> dataHolder = new ArrayList<>();
+    private ArrayList<Column> columnsHolder = new ArrayList<>();
+    private ArrayList<String> dataHolder = new ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,7 +134,7 @@ public class SignIn extends javax.swing.JFrame {
         if (userTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id = " + userTextField.getText().trim());
+                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id = " + userTextField.getText().trim()).getColumnsNames();
                 if (columnsHolder != null) {
                     if (columnsHolder.get(1).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
                         new Home(userTextField.getText(), columnsHolder.get(2).getColumnsDatas().get(0));

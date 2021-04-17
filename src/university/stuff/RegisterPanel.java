@@ -13,10 +13,10 @@ import javax.swing.JOptionPane;
  *
  * @author Hassan
  */
-public class Register extends javax.swing.JPanel {
+public class RegisterPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form Register
+     * Creates new form RegisterPanel
      */
     DataBase myDB = new DataBase();
     private final String[] stuff = {"", "Management", "Academic", "Security"};
@@ -32,7 +32,7 @@ public class Register extends javax.swing.JPanel {
     public static int createdStuffNum = 0;
     private String whoRegister;
 
-    public Register(String whoRegister) {
+    public RegisterPanel(String whoRegister) {
 
         this.whoRegister = whoRegister;
         initComponents();
@@ -369,7 +369,7 @@ public class Register extends javax.swing.JPanel {
         if (usernameTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                for (Table.Column column : myDB.getColumnsData("personal_info", "id")) {
+                for (Column column : myDB.getColumnsData("personal_info", "id").getColumnsNames()) {
 
                     for (String info : column.getColumnsDatas()) {
                         if (info.equals(usernameTextField.getText())) {
@@ -396,7 +396,7 @@ public class Register extends javax.swing.JPanel {
         if (idTextField3.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                for (Table.Column column : myDB.getColumnsData("personal_info", "national_id")) {
+                for (Column column : myDB.getColumnsData("personal_info", "national_id").getColumnsNames()) {
 
                     for (String info : column.getColumnsDatas()) {
                         if (info.equals(idTextField3.getText())) {
@@ -423,7 +423,7 @@ public class Register extends javax.swing.JPanel {
         //if (emailTextField.getText().matches("[0-9]+")) {
         try {
             myDB.connectToDataBase();
-            for (Table.Column column : myDB.getColumnsData("personal_info", "email")) {
+            for (Column column : myDB.getColumnsData("personal_info", "email").getColumnsNames()) {
 
                 for (String info : column.getColumnsDatas()) {
                     if (info.equals(emailTextField.getText())) {
@@ -451,7 +451,7 @@ public class Register extends javax.swing.JPanel {
         if (mobileTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                for (Table.Column column : myDB.getColumnsData("personal_info", "mobile")) {
+                for (Column column : myDB.getColumnsData("personal_info", "mobile").getColumnsNames()) {
                     for (String info : column.getColumnsDatas()) {
                         if (info.equals(mobileTextField.getText())) {
                             return 1;

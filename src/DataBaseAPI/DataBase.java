@@ -1,3 +1,8 @@
+/**
+ *
+ * @author Hassan Askar
+ */
+
 package DataBaseAPI;
 
 import java.sql.Connection;
@@ -14,10 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-/**
- *
- * @author Hassan Askar
- */
+
 public class DataBase {
 
     private final String dataBaseName = "university_stuff";

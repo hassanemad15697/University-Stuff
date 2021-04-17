@@ -27,7 +27,7 @@ public class SignIn extends javax.swing.JFrame {
     }
 
     DataBase myDB = new DataBase();
-    private Table columnsHolder = null;
+    private ArrayList<Column> columnsHolder;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,17 +134,28 @@ public class SignIn extends javax.swing.JFrame {
         if (userTextField.getText().matches("[0-9]+")) {
             try {
                 myDB.connectToDataBase();
-                columnsHolder = myDB.getColumnsDataWithCondition("user", "password , responsibility", "id=" + userTextField.getText().trim());
-                if (columnsHolder != null) {
-                    if (columnsHolder.getColumnsNames().get(0).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
-                        new Home(userTextField.getText(), columnsHolder.getColumnsNames().get(1).getColumnsDatas().get(0));
+                myDB.showColumnsDataWithCondition("user", "password,responsibility", "id=" + userTextField.getText());
+                columnsHolder = myDB.getColumnsDataWithCondition("user", "password ,responsibility", "id=" + userTextField.getText()).getColumnsNames();
+
+                if (!columnsHolder.get(0).getColumnsDatas().isEmpty()) {
+                    if (columnsHolder.get(0).getColumnsDatas().get(0).equals(passwordField.getText())) {
+                        new Home(userTextField.getText(), columnsHolder.get(1).getColumnsDatas().get(0));
                         this.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Wronge Password ");
+                        JOptionPane.showMessageDialog(this, "Wronge Password");
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "User Not Exists");
                 }
+
+//                if (columnsHolder.getColumnsNames().get(1).getColumnsDatas() != null) {
+//                    if (columnsHolder.getColumnsNames().get(1).getColumnsDatas().get(0).equals(new String(passwordField.getPassword()))) {
+//                        new Home(userTextField.getText(), columnsHolder.getColumnsNames().get(1).getColumnsDatas().get(0));
+//                        this.dispose();
+//                    } else {
+//                        JOptionPane.showMessageDialog(this, "Wronge Password ");
+//                    }
+//                }
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             } finally {

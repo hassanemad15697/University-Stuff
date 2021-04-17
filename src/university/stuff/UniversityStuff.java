@@ -24,18 +24,27 @@ public class UniversityStuff {
     public static void main(String[] args) {
 
         new SignIn();
-//        Table columnsHolder;
+//        ArrayList<Column> columnsHolder;
 //        DataBase myDB = new DataBase();
 //        try {
 //            myDB.connectToDataBase();
-        //myDB.showAllTableData("user");
-        //myDB.showColumnsDataWithConditionByOrder("personal_info", "name,mobile","id<4","birth");
-        //              myDB.showColumnsData("staff", "id,job");
-        //myDB.showColumnsDataWithJoin("personal_info , staff", "name ,department , job", "personal_info.id=staff.id and staff.id=2");
-
-        //myDB.showOneColumnDataWithConditionByOrder("personal_info", "name","id<6","birth");
+//            //myDB.showDataBaseStructure();
+//            columnsHolder = myDB.getColumnsDataWithCondition("user", "password,responsibility", "id=10").getColumnsNames();
 //            
-        // myDB.showColumnsDataWithJoin("personal_info,staff", "department,name,job", "personal_info.id=staff.id and staff.id=2");
+//            System.out.println(columnsHolder.get(0).getColumnsDatas());
+//            if (!columnsHolder.get(0).getColumnsDatas().isEmpty() ) {
+//                System.out.println("not null");
+//            } else {
+//                System.out.println(" null");
+//            }
+//            //myDB.showAllTableData("user");
+//            //myDB.showColumnsDataWithConditionByOrder("personal_info", "name,mobile","id<4","birth");
+//            //              myDB.showColumnsData("staff", "id,job");
+//            //myDB.showColumnsDataWithJoin("personal_info , staff", "name ,department , job", "personal_info.id=staff.id and staff.id=2");
+//
+//            //myDB.showOneColumnDataWithConditionByOrder("personal_info", "name","id<6","birth");
+//            
+            // myDB.showColumnsDataWithJoin("personal_info,staff", "department,name,job", "personal_info.id=staff.id and staff.id=2");
 //
 //            if (columnsHolder == null) {
 //                System.err.println("null");
@@ -51,8 +60,7 @@ public class UniversityStuff {
 //                }
 //            }
 //            
-//            
-//            
+////            
 //        } catch (SQLException ex) {
 //
 //        } finally {

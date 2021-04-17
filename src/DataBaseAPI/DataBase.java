@@ -2,7 +2,6 @@
  *
  * @author Hassan Askar
  */
-
 package DataBaseAPI;
 
 import java.sql.Connection;
@@ -18,7 +17,6 @@ import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
 
 public class DataBase {
 
@@ -80,22 +78,26 @@ public class DataBase {
 
     private Table getCustomTableStructure(String tablesNames, String columnsNames, String customTableName) {
         Table customTable = new Table(customTableName);
+        ArrayList<String> separatedTablesNames = getSeparatedNames(tablesNames.trim());
+        ArrayList<String> separatedColumnsNames = getSeparatedNames(columnsNames.trim());
         int tablesCounter = 0, columnsCounter = 0;
         for (Table table : DataBase) {
-            if (getSeparatedNames(tablesNames.trim()).contains(table.getTableName())) {
+            //System.out.println("#"+table.getTableName());
+            if (separatedTablesNames.contains(table.getTableName())) {
                 tablesCounter++;
                 //System.err.println("T : " + tablesCounter + "\t" + table.getTableName());
                 for (Column columnName : table.getColumnsNames()) {
-                    if (getSeparatedNames(columnsNames.trim()).contains(columnName.getColumnName())) {
+                    //System.err.println("columns names for compare : " + columnName.getColumnName());
+                    if (separatedColumnsNames.contains(columnName.getColumnName())) {
                         columnsCounter++;
                         customTable.addColumn(columnName.getColumnName(), columnName.getColumnDataType());
-                        //System.err.println("C : " + columnsCounter + "\t" + columnName.getColumnName());
+                       // System.err.println("C : " + columnsCounter + "\t" + columnName.getColumnName());
                     }
                 }
             }
         }
 
-        if (getSeparatedNames(tablesNames.trim()).size() == tablesCounter && getSeparatedNames(columnsNames.trim()).size() == columnsCounter) {
+        if (separatedTablesNames.size() == tablesCounter && separatedColumnsNames.size() == columnsCounter) {
             return customTable;
         }
 
@@ -223,7 +225,7 @@ public class DataBase {
 
                 rslt = executeQuery("SELECT * FROM " + table.getTableName());
                 if (rslt.next() == false) {
-                    return null;
+                    return table;
                 } else {
 
                     //clear old data
@@ -267,7 +269,7 @@ public class DataBase {
                     if (column.getColumnName().equals(columnName.trim())) {
                         rslt = executeQuery(Query);
                         if (rslt.next() == false) {
-                            return null;
+                            return column;
                         } else {
                             //delete old data
                             column.getColumnsDatas().clear();
@@ -330,7 +332,7 @@ public class DataBase {
         if (customTable != null) {
             rslt = executeQuery(Query);
             if (rslt.next() == false) {
-                return null;
+                return customTable;
             } else {
                 do {
                     for (Column column : customTable.getColumnsNames()) {
@@ -340,6 +342,8 @@ public class DataBase {
                 return customTable;
             }
 
+        } else {
+            System.err.println("i'm in getColumns = null");
         }
 
         return null;
@@ -401,28 +405,25 @@ public class DataBase {
         showColumns(customTable);
     }
 
-    public void makeJTable(String tableName, JTable tableOnForm) throws SQLException {
+    public void makeJTable(Table table, JTable tableOnForm) throws SQLException {
         DefaultTableModel m = (DefaultTableModel) tableOnForm.getModel();
         //delete old columns
         m.setColumnCount(0);
         //set new columns
-        DataBase = getDataBaseStructure();
-        for (Table table : DataBase) {
-            if (table.getTableName().equals(tableName.trim())) {
-                for (Column col : table.getColumnsNames()) {
-                    m.addColumn(col.getColumnName());
-                }
+        if (table != null) {
+            for (Column col : table.getColumnsNames()) {
+                m.addColumn(col.getColumnName());
             }
         }
         ////delete old columns data
         m.setRowCount(0);
-        columnsHolder = getAllTableData(tableName.trim()).getColumnsNames();
-        if (columnsHolder != null) {
+
+        if (table != null) {
             //set columns data
-            Object[] os = new Object[columnsHolder.size()];
-            for (int i = 0; i < columnsHolder.get(0).getColumnsDatas().size(); i++) {
-                for (int j = 0; j < columnsHolder.size(); j++) {
-                    os[j] = (Object) columnsHolder.get(j).getColumnsDatas().get(i);
+            Object[] os = new Object[table.getColumnsNames().size()];
+            for (int i = 0; i < table.getColumnsNames().get(0).getColumnsDatas().size(); i++) {
+                for (int j = 0; j < table.getColumnsNames().size(); j++) {
+                    os[j] = (Object) table.getColumnsNames().get(j).getColumnsDatas().get(i);
                 }
                 m.addRow(os);
             }
